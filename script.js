@@ -17,6 +17,8 @@ const currentPageDebug = document.getElementById('currentPageDebug');
 let notifications = [];
 const MAX_NOTIFICATIONS = 15;
 let virtualCurrency = 0;
+let inventoryItems = []; // Track won gifts
+const MAX_INVENTORY_DISPLAY = 6; // Maximum items to show in inventory preview
 
 // Page Navigation Function
 function navigateToPage(pageName) {
@@ -111,6 +113,7 @@ function addCurrency(amount) {
 }
 
 updateCurrencyDisplay();
+updateInventoryDisplay(); // Initialize empty inventory
 
 let lottieAnim = lottie.loadAnimation({
   container: document.getElementById('lottieAnimation'),
@@ -288,6 +291,78 @@ function clearAllNotifications() {
     notifications = [];
     updateNotificationCount();
   }, 300);
+}
+
+function updateNotificationCount() {
+  notificationCount.textContent = notifications.length;
+}
+
+// Update inventory display on home page
+function updateInventoryDisplay() {
+  const inventoryGrid = document.querySelector('.inventory-grid');
+  if (!inventoryGrid) return;
+  
+  // Clear current inventory display
+  inventoryGrid.innerHTML = '';
+  
+  // Group items by type and count them
+  const itemCounts = {};
+  inventoryItems.forEach(item => {
+    if (itemCounts[item.id]) {
+      itemCounts[item.id].count++;
+    } else {
+      itemCounts[item.id] = {
+        ...item,
+        count: 1
+      };
+    }
+  });
+  
+  // Convert to array and show up to MAX_INVENTORY_DISPLAY items
+  const uniqueItems = Object.values(itemCounts).slice(0, MAX_INVENTORY_DISPLAY);
+  
+  // Render each item
+  uniqueItems.forEach(item => {
+    const itemDiv = document.createElement('div');
+    itemDiv.className = 'inventory-item';
+    
+    // Create icon container
+    const iconDiv = document.createElement('div');
+    iconDiv.className = 'item-icon-container';
+    iconDiv.style.width = '100%';
+    iconDiv.style.height = '60%';
+    iconDiv.style.display = 'flex';
+    iconDiv.style.alignItems = 'center';
+    iconDiv.style.justifyContent = 'center';
+    
+    if (item.lottie) {
+      lottie.loadAnimation({
+        container: iconDiv,
+        renderer: 'svg',
+        loop: true,
+        autoplay: true,
+        path: item.lottie
+      });
+    }
+    
+    itemDiv.appendChild(iconDiv);
+    
+    // Add count badge
+    const countBadge = document.createElement('span');
+    countBadge.className = 'item-count';
+    countBadge.textContent = item.count;
+    itemDiv.appendChild(countBadge);
+    
+    inventoryGrid.appendChild(itemDiv);
+  });
+  
+  // Fill remaining slots with empty placeholders
+  const emptySlots = MAX_INVENTORY_DISPLAY - uniqueItems.length;
+  for (let i = 0; i < emptySlots; i++) {
+    const emptyDiv = document.createElement('div');
+    emptyDiv.className = 'inventory-item empty';
+    inventoryGrid.appendChild(emptyDiv);
+  }
 }
 
 function updateNotificationCount() {
@@ -524,9 +599,17 @@ function hideWinModal() {
 }
 
 claimButton.addEventListener('click', () => {
-  if (currentWinningPrize && currentWinningPrize.type === 'coin') {
-    virtualCurrency += parseInt(currentWinningPrize.value);
-    updateCurrencyDisplay();
+  if (currentWinningPrize) {
+    if (currentWinningPrize.type === 'coin') {
+      // Add coins to currency
+      virtualCurrency += parseInt(currentWinningPrize.value);
+      updateCurrencyDisplay();
+    } else {
+      // Add gift to inventory
+      inventoryItems.push(currentWinningPrize);
+      updateInventoryDisplay();
+      console.log('Gift added to inventory:', currentWinningPrize.value);
+    }
   }
   
   hideWinModal();
