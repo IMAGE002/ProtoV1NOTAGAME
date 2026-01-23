@@ -297,7 +297,7 @@ function updateNotificationCount() {
   notificationCount.textContent = notifications.length;
 }
 
-// Update inventory display on home page
+// Update inventory display on home page - FIXED VERSION
 function updateInventoryDisplay() {
   const inventoryGrid = document.querySelector('.inventory-grid');
   if (!inventoryGrid) return;
@@ -321,7 +321,7 @@ function updateInventoryDisplay() {
   // Convert to array and show up to MAX_INVENTORY_DISPLAY items
   const uniqueItems = Object.values(itemCounts).slice(0, MAX_INVENTORY_DISPLAY);
   
-  // Render each item
+  // Render each item with full outline
   uniqueItems.forEach(item => {
     const itemDiv = document.createElement('div');
     itemDiv.className = 'inventory-item';
@@ -329,13 +329,9 @@ function updateInventoryDisplay() {
     // Create icon container
     const iconDiv = document.createElement('div');
     iconDiv.className = 'item-icon-container';
-    iconDiv.style.width = '100%';
-    iconDiv.style.height = '60%';
-    iconDiv.style.display = 'flex';
-    iconDiv.style.alignItems = 'center';
-    iconDiv.style.justifyContent = 'center';
     
     if (item.lottie) {
+      // Load Lottie animation for gifts
       lottie.loadAnimation({
         container: iconDiv,
         renderer: 'svg',
@@ -347,26 +343,24 @@ function updateInventoryDisplay() {
     
     itemDiv.appendChild(iconDiv);
     
-    // Add count badge
-    const countBadge = document.createElement('span');
-    countBadge.className = 'item-count';
-    countBadge.textContent = item.count;
-    itemDiv.appendChild(countBadge);
+    // Add count badge if count > 1
+    if (item.count > 1) {
+      const countBadge = document.createElement('span');
+      countBadge.className = 'item-count';
+      countBadge.textContent = item.count;
+      itemDiv.appendChild(countBadge);
+    }
     
     inventoryGrid.appendChild(itemDiv);
   });
   
-  // Fill remaining slots with empty placeholders
+  // Fill remaining slots with empty placeholders (outlined cubes)
   const emptySlots = MAX_INVENTORY_DISPLAY - uniqueItems.length;
   for (let i = 0; i < emptySlots; i++) {
     const emptyDiv = document.createElement('div');
     emptyDiv.className = 'inventory-item empty';
     inventoryGrid.appendChild(emptyDiv);
   }
-}
-
-function updateNotificationCount() {
-  notificationCount.textContent = notifications.length;
 }
 
 imitateWinBtn.addEventListener('click', () => {
@@ -436,11 +430,9 @@ const prizes = [
 ];
 
 // Visual-only prize selection (for scrolling cubes)
-// This makes rare items FEEL rare without affecting actual win odds
 function selectVisualPrize() {
   const roll = Math.random() * 100;
   
-  // 70% chance: common coins (1-50)
   if (roll < 70) {
     const commonCoins = [
       prizes.find(p => p.id === 'coin1'),
@@ -452,7 +444,6 @@ function selectVisualPrize() {
     return commonCoins[Math.floor(Math.random() * commonCoins.length)];
   }
   
-  // 20% chance: medium coins and common gifts (100-250, common gifts)
   if (roll < 90) {
     const mediumPrizes = [
       prizes.find(p => p.id === 'coin100'),
@@ -464,7 +455,6 @@ function selectVisualPrize() {
     return mediumPrizes[Math.floor(Math.random() * mediumPrizes.length)];
   }
   
-  // 8% chance: rare coins and uncommon gifts
   if (roll < 98) {
     const rarePrizes = [
       prizes.find(p => p.id === 'coin500'),
@@ -475,19 +465,15 @@ function selectVisualPrize() {
     return rarePrizes[Math.floor(Math.random() * rarePrizes.length)];
   }
   
-  // 2% chance: ultra rare gifts (but still not the rarest)
   const ultraRarePrizes = [
     prizes.find(p => p.id === 'giftRing'),
     prizes.find(p => p.id === 'giftTrophy'),
     prizes.find(p => p.id === 'giftDiamond')
   ];
   return ultraRarePrizes[Math.floor(Math.random() * ultraRarePrizes.length)];
-  
-  // Note: Calendar NFT is NEVER shown in visual scroll - only as actual win
-  // This makes it feel extremely special when you actually win it
 }
 
-// Single prize selection function (REAL WINS - unchanged odds)
+// Single prize selection function (REAL WINS)
 function selectPrize() {
   const random = Math.random() * 100;
   let cumulative = 0;
@@ -624,7 +610,7 @@ claimButton.addEventListener('click', () => {
 function populateCubes() {
   const cubes = document.querySelectorAll('.cube');
   cubes.forEach(cube => {
-    const prize = selectVisualPrize(); // Use visual pool for initial display
+    const prize = selectVisualPrize();
     renderPrizeToCube(cube, prize);
   });
 }
@@ -640,15 +626,13 @@ function updateCubesAndScroll() {
   
   scrollPosition += scrollSpeed;
   
-  // Handle cube recycling
   if (scrollPosition >= totalCubeWidth) {
     const firstCube = cubes[0];
     wheel.appendChild(firstCube);
     scrollPosition -= totalCubeWidth;
     
-    // Only regenerate cubes when not spinning
     if (!isSpinning) {
-      const prize = selectVisualPrize(); // Use visual pool for scrolling
+      const prize = selectVisualPrize();
       renderPrizeToCube(firstCube, prize);
     }
   }
@@ -733,20 +717,15 @@ if (spinButton) {
     const winningPrize = selectPrize();
     console.log('Selected prize:', winningPrize);
 
-    // Calculate the target stop position
     const minSpinDistance = 3000 + Math.random() * 1000;
     
-    // Find which cube index will be in the center after this distance
     const cubes = Array.from(document.querySelectorAll('.cube'));
     const totalCubes = cubes.length;
     
-    // Calculate how many cube positions we'll scroll through
     const cubePositionsToScroll = Math.floor(minSpinDistance / totalCubeWidth);
     
-    // The cube that will end up in center (accounting for the circular nature)
     winningCubeIndex = cubePositionsToScroll % totalCubes;
     
-    // Place the winning prize in that cube RIGHT NOW
     renderPrizeToCube(cubes[winningCubeIndex], winningPrize);
     
     console.log('Winning cube index:', winningCubeIndex, 'Prize:', winningPrize);
@@ -779,7 +758,6 @@ if (spinButton) {
           let minDistance = Infinity;
           let distanceToSnap = 0;
           
-          // Find the cube closest to center
           cubes.forEach(cube => {
             const cubeRect = cube.getBoundingClientRect();
             const containerRect = wheelContainer.getBoundingClientRect();
