@@ -360,7 +360,59 @@ const prizes = [
   { id: 'giftCalendar', type: 'gift', value: 'Calendar', chance: 0.06, lottie: 'assets/giftCalendar.json' }
 ];
 
-// Single prize selection function
+// Visual-only prize selection (for scrolling cubes)
+// This makes rare items FEEL rare without affecting actual win odds
+function selectVisualPrize() {
+  const roll = Math.random() * 100;
+  
+  // 70% chance: common coins (1-50)
+  if (roll < 70) {
+    const commonCoins = [
+      prizes.find(p => p.id === 'coin1'),
+      prizes.find(p => p.id === 'coin5'),
+      prizes.find(p => p.id === 'coin10'),
+      prizes.find(p => p.id === 'coin25'),
+      prizes.find(p => p.id === 'coin50')
+    ];
+    return commonCoins[Math.floor(Math.random() * commonCoins.length)];
+  }
+  
+  // 20% chance: medium coins and common gifts (100-250, common gifts)
+  if (roll < 90) {
+    const mediumPrizes = [
+      prizes.find(p => p.id === 'coin100'),
+      prizes.find(p => p.id === 'coin250'),
+      prizes.find(p => p.id === 'giftHeart'),
+      prizes.find(p => p.id === 'giftBear'),
+      prizes.find(p => p.id === 'giftGift')
+    ];
+    return mediumPrizes[Math.floor(Math.random() * mediumPrizes.length)];
+  }
+  
+  // 8% chance: rare coins and uncommon gifts
+  if (roll < 98) {
+    const rarePrizes = [
+      prizes.find(p => p.id === 'coin500'),
+      prizes.find(p => p.id === 'giftRose'),
+      prizes.find(p => p.id === 'giftCake'),
+      prizes.find(p => p.id === 'giftRoseBouquet')
+    ];
+    return rarePrizes[Math.floor(Math.random() * rarePrizes.length)];
+  }
+  
+  // 2% chance: ultra rare gifts (but still not the rarest)
+  const ultraRarePrizes = [
+    prizes.find(p => p.id === 'giftRing'),
+    prizes.find(p => p.id === 'giftTrophy'),
+    prizes.find(p => p.id === 'giftDiamond')
+  ];
+  return ultraRarePrizes[Math.floor(Math.random() * ultraRarePrizes.length)];
+  
+  // Note: Calendar NFT is NEVER shown in visual scroll - only as actual win
+  // This makes it feel extremely special when you actually win it
+}
+
+// Single prize selection function (REAL WINS - unchanged odds)
 function selectPrize() {
   const random = Math.random() * 100;
   let cumulative = 0;
@@ -396,13 +448,14 @@ function renderPrizeToCube(cube, prize) {
     const valueText = document.createElement('div');
     valueText.textContent = prize.value;
     valueText.style.position = 'absolute';
-    valueText.style.top = '15%';
-    valueText.style.left = '25%';
+    valueText.style.top = '50%';
+    valueText.style.left = '50%';
     valueText.style.transform = 'translate(-50%, -50%)';
     valueText.style.fontSize = '1.5rem';
     valueText.style.fontWeight = '700';
     valueText.style.color = '#ffffff';
     valueText.style.textShadow = '0 2px 8px rgba(0, 0, 0, 0.8)';
+    valueText.style.pointerEvents = 'none';
     cube.appendChild(valueText);
   } else {
     const container = document.createElement('div');
@@ -488,7 +541,7 @@ claimButton.addEventListener('click', () => {
 function populateCubes() {
   const cubes = document.querySelectorAll('.cube');
   cubes.forEach(cube => {
-    const prize = selectPrize();
+    const prize = selectVisualPrize(); // Use visual pool for initial display
     renderPrizeToCube(cube, prize);
   });
 }
@@ -512,7 +565,7 @@ function updateCubesAndScroll() {
     
     // Only regenerate cubes when not spinning
     if (!isSpinning) {
-      const prize = selectPrize();
+      const prize = selectVisualPrize(); // Use visual pool for scrolling
       renderPrizeToCube(firstCube, prize);
     }
   }
