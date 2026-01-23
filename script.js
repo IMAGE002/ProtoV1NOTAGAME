@@ -509,8 +509,8 @@ function renderPrizeToCube(cube, prize) {
     const valueText = document.createElement('div');
     valueText.textContent = prize.value;
     valueText.style.position = 'absolute';
-    valueText.style.top = '50%';
-    valueText.style.left = '50%';
+    valueText.style.top = '15%';
+    valueText.style.left = '25%';
     valueText.style.transform = 'translate(-50%, -50%)';
     valueText.style.fontSize = '1.5rem';
     valueText.style.fontWeight = '700';
