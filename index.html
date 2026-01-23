@@ -233,6 +233,141 @@
       <p>This is the settings page. Customize your experience and manage your account settings.</p>
     </div>
   </div>
+
+  <!-- DAILY SPIN PAGE -->
+  <div class="page-content" id="page-dailyspin">
+    <div class="daily-spin-container">
+      <div class="spin-section">
+        <div class="wheel-container">
+          <div class="wheel-pointer"></div>
+          <div class="wheel" id="wheel">
+            <div class="cube"></div>
+            <div class="cube"></div>
+            <div class="cube"></div>
+            <div class="cube"></div>
+            <div class="cube"></div>
+            <div class="cube"></div>
+            <div class="cube"></div>
+            <div class="cube"></div>
+            <div class="cube"></div>
+            <div class="cube"></div>
+            <div class="cube"></div>
+            <div class="cube"></div>
+            <div class="cube"></div>
+            <div class="cube"></div>
+            <div class="cube"></div>
+            <div class="cube"></div>
+            <div class="cube"></div>
+            <div class="cube"></div>
+            <div class="cube"></div>
+            <div class="cube"></div>
+          </div>
+        </div>
+        <button class="spin-button" id="spinButton">SPIN!</button>
+      </div>
+
+      <div class="rewards-section">
+        <div class="rewards-header">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="15" y1="9" x2="9" y2="15"/>
+            <line x1="9" y1="9" x2="15" y2="15"/>
+          </svg>
+          <h2 class="rewards-title">What can I <span class="get-text">get?</span></h2>
+        </div>
+
+        <div class="reward-grid">
+          <div class="reward-item">
+            <div class="reward-amount">1</div>
+            <div class="reward-icon" id="coin1"></div>
+          </div>
+          <div class="reward-item">
+            <div class="reward-amount">5</div>
+            <div class="reward-icon" id="coin5"></div>
+          </div>
+          <div class="reward-item">
+            <div class="reward-amount">10</div>
+            <div class="reward-icon" id="coin10"></div>
+          </div>
+          <div class="reward-item">
+            <div class="reward-amount">25</div>
+            <div class="reward-icon" id="coin25"></div>
+          </div>
+          <div class="reward-item">
+            <div class="reward-amount">50</div>
+            <div class="reward-icon" id="coin50"></div>
+          </div>
+          <div class="reward-item">
+            <div class="reward-amount">100</div>
+            <div class="reward-icon" id="coin100"></div>
+          </div>
+          <div class="reward-item">
+            <div class="reward-amount">250</div>
+            <div class="reward-icon" id="coin250"></div>
+          </div>
+          <div class="reward-item">
+            <div class="reward-amount">500</div>
+            <div class="reward-icon" id="coin500"></div>
+          </div>
+        </div>
+
+        <div class="gift-grid">
+          <div class="gift-item">
+            <div class="gift-icon" id="giftHeart"></div>
+            <div class="gift-label">Telegram Gift</div>
+          </div>
+          <div class="gift-item">
+            <div class="gift-icon" id="giftBear"></div>
+            <div class="gift-label">Telegram Gift</div>
+          </div>
+          <div class="gift-item">
+            <div class="gift-icon" id="giftGift"></div>
+            <div class="gift-label">Telegram Gift</div>
+          </div>
+          <div class="gift-item">
+            <div class="gift-icon" id="giftRose"></div>
+            <div class="gift-label">Telegram Gift</div>
+          </div>
+          <div class="gift-item">
+            <div class="gift-icon" id="giftCake"></div>
+            <div class="gift-label">Telegram Gift</div>
+          </div>
+          <div class="gift-item">
+            <div class="gift-icon" id="giftRoseBouquet"></div>
+            <div class="gift-label">Telegram Gift</div>
+          </div>
+          <div class="gift-item">
+            <div class="gift-icon" id="giftRing"></div>
+            <div class="gift-label">Telegram Gift</div>
+          </div>
+          <div class="gift-item">
+            <div class="gift-icon" id="giftTrophy"></div>
+            <div class="gift-label">Telegram Gift</div>
+          </div>
+          <div class="gift-item">
+            <div class="gift-icon" id="giftDiamond"></div>
+            <div class="gift-label">Telegram Gift</div>
+          </div>
+          <div class="gift-item">
+            <div class="gift-icon" id="giftCalendar"></div>
+            <div class="gift-label">Telegram NFT</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Win Modal -->
+<div class="win-modal-overlay" id="winModal">
+  <div class="win-modal">
+    <div class="win-modal-header">You Won...</div>
+    <div class="win-modal-prize">
+      <div class="win-modal-icon" id="modalPrizeIcon"></div>
+    </div>
+    <div class="win-modal-footer">...<span id="modalPrizeName"></span>!!!</div>
+    <button class="claim-button" id="claimButton">CLAIM!!</button>
+  </div>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
